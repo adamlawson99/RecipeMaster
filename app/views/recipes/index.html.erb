@@ -1,0 +1,81 @@
+<% content_for :title, "Recipes" %>
+
+<div class="grid grid-cols-[200px_1fr] min-h-screen">
+
+  <!-- Sidebar -->
+  <div class="bg-[#1a232e] text-white ">
+    <div class="ml-1">
+      <h1 class="mt-6 mb-5 text-xl font-bold">Recipe Master</h1>
+      <div class="grid gap-y-2">
+        <h1 class="mb-3 font-bold">Categories</h1>
+        <% @categories.each do |category| %>
+          <div class="grid grid-cols-[min-content_1fr] gap-2">
+            <input type="checkbox" class="checkbox checkbox-accent" />
+            <p><%= category %></p>
+          </div>
+        <% end %>
+      </div>
+      <div class="grid gap-y-2 mt-5">
+        <h1 class="mb-3 font-bold">Tags</h1>
+        <% @tags.each do |tag| %>
+          <div class="grid grid-cols-[min-content_1fr] gap-2">
+            <input type="checkbox" class="checkbox checkbox-accent" />
+            <p><%= tag %></p>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main -->
+  <div class="ml-5 mr-5">
+    <% if notice.present? %>
+      <p class="py-2 px-3 bg-green-50 mb-5 text-green-500 font-medium rounded-md inline-block" id="notice"><%= notice %></p>
+    <% end %>
+    <div class="grid grid-cols-[1fr_1fr_min-content] items-center gap-5 mb-5 mt-5">
+      <h1 class="text-xl font-bold">Recipes</h1>
+      <label class="input justify-self-end">
+        <svg class="h-[1em] opacity-50" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+          <g
+            stroke-linejoin="round"
+            stroke-linecap="round"
+            stroke-width="2.5"
+            fill="none"
+            stroke="currentColor"
+          >
+            <circle cx="11" cy="11" r="8"></circle>
+            <path d="m21 21-4.3-4.3"></path>
+          </g>
+        </svg>
+        <input type="search" class="grow" placeholder="Search" />
+      </label>
+
+      <%= link_to "New Recipe", new_recipe_path, class: "btn btn-primary whitespace-nowrap" %>
+    </div>
+    <div class="overflow-x-auto">
+      <table class="table">
+        <!-- head -->
+        <thead>
+        <tr>
+          <th>Recipe</th>
+          <th>Description</th>
+          <th>Categories</th>
+          <th>Tags</th>
+        </tr>
+        </thead>
+        <tbody>
+        <!-- row 1 -->
+        <% @recipes.each do |recipe| %>
+          <tr>
+            <td><%= recipe.title %></td>
+            <td><%= recipe.description %></td>
+            <td><%= recipe.categories %></td>
+            <td><%= recipe.tags %></td>
+            <td><%= link_to "View Recipe", recipe_path(recipe), class: "btn btn-primary whitespace-nowrap" %></td>
+          </tr>
+        <% end %>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

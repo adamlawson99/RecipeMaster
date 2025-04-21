@@ -1,4 +1,5 @@
-<div>
-  <h1 class="font-bold text-4xl">Home#index</h1>
-  <p>Find me in app/views/home/index.html.erb</p>
+<div class="grid auto-cols-min auto-rows-min min-h-screen content-center justify-center gap-5 ml-5 mr-5">
+  <h1 class="text-9xl font-bold text-center text-nowrap">Recipe Master</h1>
+  <%= image_tag("main_image.png", :alt => "main image", :size => '260x180', :class => 'justify-self-center') %>
+  <%= link_to "Let's Eat!", recipes_path, class: "btn btn-primary" %>
 </div>

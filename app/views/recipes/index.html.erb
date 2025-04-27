@@ -24,6 +24,7 @@
           </div>
         <% end %>
       </div>
+      <button class="btn btn-info mt-5">Reset All</button>
     </div>
   </div>
 
@@ -50,7 +51,7 @@
         <input type="search" class="grow" placeholder="Search" />
       </label>
 
-      <%= link_to "New Recipe", new_recipe_path, class: "btn btn-primary whitespace-nowrap" %>
+      <%= link_to "New Recipe", create_recipe_path, class: "btn btn-primary whitespace-nowrap" %>
     </div>
     <div class="overflow-x-auto">
       <table class="table">

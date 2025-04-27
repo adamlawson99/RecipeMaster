@@ -1,0 +1,16 @@
+<%= turbo_stream.update "web_recipe_turbo_stream" do %>
+  <div class="fetched-form">
+    <h2>Review Fetched Data</h2>
+
+    <%= form_tag '/test' do %>
+      <% @fetched_data.each do |key, value| %>
+        <div class="field">
+          <%= label_tag key %>
+          <%= text_field_tag key, value %>
+        </div>
+      <% end %>
+
+      <%= submit_tag "Save Data" %>
+    <% end %>
+  </div>
+<% end %>

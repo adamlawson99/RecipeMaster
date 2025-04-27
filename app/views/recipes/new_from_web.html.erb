@@ -1,0 +1,11 @@
+<h1>From URL</h1>
+
+<%= turbo_frame_tag "web_recipe_fetch_form" do %>
+  <%= form_with url: fetch_url_path, method: :post, data: { turbo_frame: "web_recipe_turbo_stream" } do |f| %>
+    <%= f.label :url, "Enter URL:" %>
+    <%= f.url_field :url, required: true, class: "input input-primary", placeholder: "URL" %>
+    <%= f.submit "Fetch Data", class: "btn btn-primary" %>
+  <% end %>
+<% end %>
+
+<%= turbo_frame_tag "web_recipe_turbo_stream" %>

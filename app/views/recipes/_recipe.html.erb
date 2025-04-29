@@ -1,42 +1,76 @@
-<div id="<%= dom_id recipe %>" class="w-full sm:w-auto my-5 space-y-5">
+<div id="<%= dom_id recipe %>" class="card bg-base-100 shadow-xl w-full my-6 flex flex-col mt-0">
   <div>
-    <strong class="block font-medium mb-1">Title:</strong>
-    <%= recipe.title %>
+    <%= render "layouts/header" %>
   </div>
-  <div>
-    <strong class="block font-medium mb-1">Description:</strong>
-    <%= recipe.description %>
-  </div>
-  <div>
-    <strong class="block font-medium mb-1">Short description:</strong>
-    <%= recipe.short_description %>
-  </div>
-  <div>
-    <strong class="block font-medium mb-1">Categories:</strong>
-    <%= recipe.categories %>
-  </div>
-  <div>
-    <strong class="block font-medium mb-1">Tags:</strong>
-    <%= recipe.tags %>
-  </div>
-  <div>
-    <strong class="block font-medium mb-1">Servings:</strong>
-    <%= recipe.servings %>
-  </div>
-  <div>
-    <strong class="block font-medium mb-1">Ingredients:</strong>
-    <%= recipe.ingredients %>
-  </div>
-  <div>
-    <strong class="block font-medium mb-1">Instructions:</strong>
-    <%= recipe.instructions %>
-  </div>
-  <div>
-    <strong class="block font-medium mb-1">Calories:</strong>
-    <%= recipe.calories %>
-  </div>
-  <div>
-    <strong class="block font-medium mb-1">Macros:</strong>
-    <%= recipe.macros %>
+  <!-- Card header with title and metadata -->
+  <div class="card-body">
+    <h2 class="card-title text-2xl font-bold text-neutral"><%= recipe.title %></h2>
+    <div class="badge badge-primary mb-3"><%= recipe.servings %> servings</div>
+
+    <!-- Description section -->
+    <div class="mb-4">
+      <p class="text-base-content opacity-80"><%= recipe.description %></p>
+    </div>
+
+    <!-- Categories and Tags -->
+    <div class="flex flex-wrap gap-2 mb-4">
+      <% if recipe.categories.present? %>
+        <% recipe.categories.split(',').each do |category| %>
+          <div class="badge badge-outline"><%= category.strip %></div>
+        <% end %>
+      <% end %>
+
+      <% if recipe.tags.present? %>
+        <% recipe.tags.split(',').each do |tag| %>
+          <div class="badge badge-ghost"><%= tag.strip %></div>
+        <% end %>
+      <% end %>
+    </div>
+
+    <!-- Nutrition info in stats -->
+    <div class="stats shadow mb-6">
+      <% if recipe.calories.present? %>
+        <div class="stat">
+          <div class="stat-title">Calories</div>
+          <div class="stat-value text-primary"><%= recipe.calories %></div>
+        </div>
+      <% end %>
+
+      <% if recipe.macros.present? %>
+        <div class="stat">
+          <div class="stat-title">Macros</div>
+          <div class="stat-value text-secondary"><%= recipe.macros %></div>
+        </div>
+      <% end %>
+    </div>
+
+    <div class="divider">Recipe Details</div>
+
+    <!-- Two column layout for ingredients and instructions on larger screens -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <!-- Ingredients column -->
+      <div>
+        <h3 class="text-xl font-semibold mb-3 text-neutral">Ingredients</h3>
+        <ul class="menu bg-base-200 rounded-box p-2">
+          <% recipe.ingredients_list.each do |ingredient| %>
+            <li>
+              <span class="flex items-center gap-2">
+                <div class="badge badge-primary"><%= ingredient["quantity"] %> <%= ingredient["measurement"] %></div>
+                <span><%= ingredient["ingredient"] %></span>
+              </span>
+            </li>
+          <% end %>
+        </ul>
+      </div>
+
+      <!-- Instructions column -->
+      <div>
+        <h3 class="text-xl font-semibold mb-3 text-neutral">Instructions</h3>
+        <div class="prose max-w-none bg-base-200 p-4 rounded-box">
+          <%= recipe.instructions %>
+        </div>
+      </div>
+    </div>
+
   </div>
 </div>

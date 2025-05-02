@@ -1,10 +1,18 @@
-<h1>From URL</h1>
+<div class="flex flex-col mb-5">
+  <div>
+    <%= render "layouts/header" %>
+  </div>
+  <div class="ml-5 mr-5">
+    <h1 class="text-xl font-bold mb-1">New Recipe</h1>
+    <div class="new-recipe-url-input" data-controller="new-web-recipe">
+      <%= form_with url: fetch_url_path, method: :post, data: { turbo_frame: "web_recipe_turbo_stream" } do |f| %>
+        <%= f.url_field :url, required: true, class: "input input-primary mr-1", placeholder: "URL" %>
+        <%= f.submit "Fetch Recipe Data", class: "btn btn-primary", data: { action: "new-web-recipe#hideUrlSubmitForm" } %>
 
-<%= form_with url: fetch_url_path, method: :post, data: { turbo_frame: "web_recipe_turbo_stream" } do |f| %>
-  <%= f.label :url, "Enter URL:" %>
-  <%= f.url_field :url, required: true, class: "input input-primary", placeholder: "URL" %>
-  <%= f.submit "Fetch Data", class: "btn btn-primary" %>
+      <% end %>
+    </div>
+    <span class="loading loading-dots loading-xl hidden"></span>
+    <%= turbo_frame_tag "web_recipe_turbo_stream" %>
+  </div>
 
-<% end %>
-
-<%= turbo_frame_tag "web_recipe_turbo_stream" %>
+</div>

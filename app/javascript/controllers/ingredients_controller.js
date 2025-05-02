@@ -4,11 +4,12 @@ export default class extends Controller {
     static targets = ["template", "container"]
 
     connect() {
-        console.log("HELLO WORLD!")
         // Make sure there's at least one row
         if (document.querySelectorAll('.ingredient-row').length === 0) {
             this.add()
         }
+        const loadingSpinner = document.querySelector('.loading-dots');
+        loadingSpinner.style.display = 'none';
     }
 
     add() {

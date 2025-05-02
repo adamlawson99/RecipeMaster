@@ -25,14 +25,14 @@ class WebRecipeFetchService
       \t"ingredients": [
       \t\t{
       \t\t\t"ingredient": string,
-      \t\t\t"quantity": number,
+      \t\t\t"quantity": number as a decimal,
       \t\t\t"measurement": string (ex: tbsp, cup, lb)
       \t\t}
       \t],
       \t"instructions": string,
       }
 
-      Your response should be the JSON only, nothing else. If you cannot fill out a field in the JSON please leave it blank.#{' '}
+      Your response should be the JSON only, nothing else. If you cannot fill out a field in the JSON please leave it blank.
       Please exclude any extra formatting such as markdown or any additional text, only return the raw json as text.
     HEREDOC
   end
@@ -53,25 +53,24 @@ class WebRecipeFetchService
       ]
     }.to_json
 
-    Rails.logger.error("REQUEST URL: #{uri}")
-    Rails.logger.error("REQUEST BODY: #{request_body}")
-
     begin
       response = Net::HTTP.post(uri, request_body, headers)
-      Rails.logger.error("RESPONSE => Success: response.code, body: #{response.body}")
 
       # Parse the response and extract the data you need
       # This will depend on what data you're fetching and its format
       # For example, if it's JSON:
-      body = {}
+      recipe_data = {}
       if response.is_a?(Net::HTTPSuccess)
-        body = JSON.parse(response.body)
-        Rails.logger.error("BODY: #{body["candidates"][0]["content"]["parts"][0]["text"]}")
-        sanitized_body = sanitize_text(body["candidates"][0]["content"]["parts"][0]["text"])
-        Rails.logger.error("SANITIZED BODY: #{sanitized_body}")
-        body = JSON.parse(sanitized_body)
+        # Rails.logger.error "here! #{response.body}"
+        # Rails.logger.error "candidates #{response.body["candidates"][0]}"
+        # Rails.logger.error "content! #{response.body["candidates"][0]["content"]["parts"][0]}"
+        # Rails.logger.error "parts! #{response.body["candidates"][0]["content"]["parts"][0]["text"]}"
+        response_body_json = JSON.parse(response.body)
+        sanitized_body = sanitize_text(response_body_json["candidates"][0]["content"]["parts"][0]["text"])
+        Rails.logger.error "sanitized body: #{sanitized_body}"
+        recipe_data = JSON.parse(sanitized_body)
       end
-      body
+      recipe_data
     rescue Exception => e
       Rails.logger.error(e)
       nil
@@ -79,6 +78,7 @@ class WebRecipeFetchService
   end
 
   def self.sanitize_text(text)
+    Rails.logger.error "text #{text}"
     text unless text.start_with?("```JSON")
     text[7..text.length - 4]
   end

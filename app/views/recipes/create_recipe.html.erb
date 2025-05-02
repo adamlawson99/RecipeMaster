@@ -1,3 +1,12 @@
-<h1>Create New Recipe</h1>
-<%= link_to "From Web", new_recipe_from_web_path, class: "btn btn-primary" %>
-<%= link_to "Manual Input", new_recipe_path, class: "btn btn-primary" %>
+<div class="card bg-base-100 shadow-xl w-full my-6 flex flex-col mt-0">
+  <div>
+    <%= render "layouts/header" %>
+  </div>
+  <div class="card-body">
+    <h1 class="card-title text-2xl font-bold">Create New Recipe</h1>
+    <div class="flex flex-col sm:flex-row gap-4 mt-4">
+      <%= link_to "From The Web", new_from_web_form_path, class: "btn btn-primary" %>
+      <%= link_to "Manual Input", new_recipe_path, class: "btn btn-secondary" %>
+    </div>
+  </div>
+</div>

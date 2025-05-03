@@ -40,7 +40,5 @@ module RecipeMaster
     config.generators.system_tests = nil
 
     config.autoload_paths += Dir["#{config.root}/app/services/**/"]
-
-    config.turbo.redirect_to_html = true
   end
 end

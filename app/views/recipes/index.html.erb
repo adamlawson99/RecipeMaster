@@ -1,6 +1,6 @@
 <% content_for :title, "Recipes" %>
 
-<div class="grid grid-cols-[200px_1fr] min-h-screen">
+<div class="grid grid-cols-[200px_1fr] min-h-screen" data-controller="recipes-index" data-recipes-index-recipes-value="<%= @recipes.to_json %>">
 
   <!-- Sidebar -->
   <div class="bg-[#1a232e] text-white ">
@@ -10,7 +10,11 @@
         <h1 class="mb-3 font-bold">Categories</h1>
         <% @categories.each do |category| %>
           <div class="grid grid-cols-[min-content_1fr] gap-2">
-            <input type="checkbox" class="checkbox checkbox-accent" />
+            <input type="checkbox"
+                   class="checkbox checkbox-accent"
+                   data-recipes-index-target="categoryCheckbox"
+                   data-action="click->recipes-index#selectCategory"
+                   data-category-value="<%= category %>"/>
             <p><%= category %></p>
           </div>
         <% end %>
@@ -19,12 +23,16 @@
         <h1 class="mb-3 font-bold">Tags</h1>
         <% @tags.each do |tag| %>
           <div class="grid grid-cols-[min-content_1fr] gap-2">
-            <input type="checkbox" class="checkbox checkbox-accent" />
+            <input type="checkbox"
+                   class="checkbox checkbox-accent"
+                   data-recipes-index-target="tagCheckbox"
+                   data-action="click->recipes-index#selectTag"
+                   data-tag-value="<%= tag %>"/>
             <p><%= tag %></p>
           </div>
         <% end %>
       </div>
-      <button class="btn btn-info mt-5">Reset All</button>
+      <button class="btn btn-info mt-5" data-action="click->recipes-index#resetFilters">Reset All</button>
     </div>
   </div>
 
@@ -48,35 +56,13 @@
             <path d="m21 21-4.3-4.3"></path>
           </g>
         </svg>
-        <input type="search" class="grow" placeholder="Search" />
+        <input type="search" class="grow" placeholder="Search"/>
       </label>
 
       <%= link_to "New Recipe", create_recipe_path, class: "btn btn-primary whitespace-nowrap" %>
     </div>
-    <div class="overflow-x-auto">
-      <table class="table">
-        <!-- head -->
-        <thead>
-        <tr>
-          <th>Recipe</th>
-          <th>Description</th>
-          <th>Categories</th>
-          <th>Tags</th>
-        </tr>
-        </thead>
-        <tbody>
-        <!-- row 1 -->
-        <% @recipes.each do |recipe| %>
-          <tr>
-            <td><%= recipe.title %></td>
-            <td><%= recipe.description %></td>
-            <td><%= recipe.categories %></td>
-            <td><%= recipe.tags %></td>
-            <td><%= link_to "View Recipe", recipe_path(recipe), class: "btn btn-primary whitespace-nowrap" %></td>
-          </tr>
-        <% end %>
-        </tbody>
-      </table>
+    <div class="overflow-x-auto" id="recipes-table">
+
     </div>
   </div>
 </div>

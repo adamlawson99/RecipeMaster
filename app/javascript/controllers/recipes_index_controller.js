@@ -59,7 +59,6 @@ export default class extends Controller {
      * @param {HTMLElement} container - DOM element to append the table to
      */
     reloadTable() {
-        console.log("reload table!")
         const table = document.querySelector("table")
         table.remove()
         this.createRecipeTable()
@@ -89,6 +88,7 @@ export default class extends Controller {
             .forEach(checkbox => {
                 checkbox.checked = false
             });
+        this.reloadTable();
     }
 
     doRecipesCategoriesIncludeSelectedCategories(recipe_categories) {

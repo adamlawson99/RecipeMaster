@@ -9,16 +9,12 @@ class TiktokRecipeFetchService
   def get_recipe_data(url)
     caption = get_video_caption url
     prompt = get_prompt caption
-    data = make_gemini_request prompt
-    Rails.logger.error "DATA: #{data}"
-    data
+    make_gemini_request prompt
   end
 
   def get_video_caption(url)
-    Rails.logger.error "get_video_caption"
     uri = URI(url)
     response = Net::HTTP.get(uri)
-    # Rails.logger.error "RAW HTML: #{response}"
     doc = Nokogiri::HTML(response)
     element = doc.css("script#__UNIVERSAL_DATA_FOR_REHYDRATION__").first.content
     JSON.parse(element)["__DEFAULT_SCOPE__"]["webapp.video-detail"]["itemInfo"]["itemStruct"]["desc"]

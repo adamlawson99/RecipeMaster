@@ -29,9 +29,6 @@ module GeminiService
     begin
       response = Net::HTTP.post(uri, request_body, headers)
 
-      # Parse the response and extract the data you need
-      # This will depend on what data you're fetching and its format
-      # For example, if it's JSON:
       recipe_data = {}
       if response.is_a?(Net::HTTPSuccess)
         response_body_json = JSON.parse(response.body)

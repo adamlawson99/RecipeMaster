@@ -25,8 +25,6 @@ export default class extends Controller {
                 const tag = checkbox.dataset.tagValue.trim()
                 this.selectedTags.add(tag)
             });
-        console.log(this.selectedTags)
-        console.log(this.selectedCategories)
     }
 
     selectCategory(event) {

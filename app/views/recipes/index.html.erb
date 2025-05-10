@@ -1,6 +1,6 @@
 <% content_for :title, "Recipes" %>
 
-<div class="grid grid-cols-[200px_1fr] min-h-screen" data-controller="recipes-index" data-recipes-index-recipes-value="<%= @recipes.to_json %>">
+<div class="grid grid-cols-[200px_1fr] min-h-screen">
 
   <!-- Sidebar -->
   <div class="bg-[#1a232e] text-white ">
@@ -56,13 +56,21 @@
             <path d="m21 21-4.3-4.3"></path>
           </g>
         </svg>
-        <input type="search" class="grow" placeholder="Search"/>
+        <%= form_with(url: query_recipes_path, method: :get,
+                      data: { controller: "auto-submit",
+                              auto_submit_target: "form",
+                              turbo_frame: "recipes_tables" }) do |form| %>
+          <%= form.text_field :query,
+                              # data: { auto_submit_target: "input",
+                              #         action: "keyup->auto-submit#typing keydown->auto-submit#resetTimer" },
+                              placeholder: "Search" %>
+        <% end %>
       </label>
 
       <%= link_to "New Recipe", create_recipe_path, class: "btn btn-primary whitespace-nowrap" %>
     </div>
-    <div class="overflow-x-auto" id="recipes-table">
-
-    </div>
+    <%= turbo_frame_tag "recipes_tables", src: query_recipes_path do %>
+      <h1>Table data will be here!</h1>
+    <% end %>
   </div>
 </div>

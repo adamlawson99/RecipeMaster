@@ -8,6 +8,20 @@ class RecipesController < ApplicationController
     @categories = get_categories
   end
 
+  def query
+    query_param = params[:query]
+    Rails.logger.error(query_param)
+    if query_param && !query_param.empty?
+      elastic_search_results = ElasticSearchService.new.fetch_documents_from_index("recipes_index", query_param)
+      @query_data = elastic_search_results["hits"]["hits"].map { |obj| obj["_source"] }.to_json
+    else
+      @query_data = Recipe.all.to_json
+    end
+    respond_to do |format|
+      format.html { render "recipes/table" }
+    end
+  end
+
   # GET /recipes/1 or /recipes/1.json
   def show
   end

@@ -1,40 +1,6 @@
 <% content_for :title, "Recipes" %>
 
-<div class="grid grid-cols-[200px_1fr] min-h-screen">
-
-  <!-- Sidebar -->
-  <div class="bg-[#1a232e] text-white ">
-    <div class="ml-2">
-      <h1 class="mt-6 mb-5 text-xl font-bold">Recipe Master</h1>
-      <div class="grid gap-y-2">
-        <h1 class="mb-3 font-bold">Categories</h1>
-        <% @categories.each do |category| %>
-          <div class="grid grid-cols-[min-content_1fr] gap-2">
-            <input type="checkbox"
-                   class="checkbox checkbox-accent"
-                   data-recipes-index-target="categoryCheckbox"
-                   data-action="click->recipes-index#selectCategory"
-                   data-category-value="<%= category %>"/>
-            <p><%= category %></p>
-          </div>
-        <% end %>
-      </div>
-      <div class="grid gap-y-2 mt-5">
-        <h1 class="mb-3 font-bold">Tags</h1>
-        <% @tags.each do |tag| %>
-          <div class="grid grid-cols-[min-content_1fr] gap-2">
-            <input type="checkbox"
-                   class="checkbox checkbox-accent"
-                   data-recipes-index-target="tagCheckbox"
-                   data-action="click->recipes-index#selectTag"
-                   data-tag-value="<%= tag %>"/>
-            <p><%= tag %></p>
-          </div>
-        <% end %>
-      </div>
-      <button class="btn btn-info mt-5" data-action="click->recipes-index#resetFilters">Reset All</button>
-    </div>
-  </div>
+<div>
 
   <!-- Main -->
   <div class="ml-5 mr-5">
@@ -69,8 +35,8 @@
 
       <%= link_to "New Recipe", create_recipe_path, class: "btn btn-primary whitespace-nowrap" %>
     </div>
-    <%= turbo_frame_tag "recipes_tables", src: query_recipes_path do %>
-      <h1>Table data will be here!</h1>
-    <% end %>
   </div>
+  <%= turbo_frame_tag "recipes_tables", src: query_recipes_path do %>
+    <h1>Table data will be here!</h1>
+  <% end %>
 </div>

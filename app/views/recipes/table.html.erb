@@ -1,6 +1,37 @@
 <%= turbo_frame_tag "recipes_tables" do %>
-  <div data-controller="recipes-index" data-recipes-index-recipes-value="<%= @query_data %>">
-    <div class="overflow-x-auto" id="recipes-table">
+  <div class="grid grid-cols-[200px_1fr] min-h-screen" data-controller="recipes-index" data-recipes-index-recipes-value="<%= @query_data %>">
+    <div class="bg-[#1a232e] text-white ">
+      <div class="ml-2 mt-5">
+        <div class="grid gap-y-2">
+          <h1 class="mb-3 font-bold">Categories</h1>
+          <% @categories.each do |category| %>
+            <div class="grid grid-cols-[min-content_1fr] gap-2">
+              <input type="checkbox"
+                     class="checkbox checkbox-accent"
+                     data-recipes-index-target="categoryCheckbox"
+                     data-action="click->recipes-index#selectCategory"
+                     data-category-value="<%= category %>"/>
+              <p><%= category %></p>
+            </div>
+          <% end %>
+        </div>
+        <div class="grid gap-y-2 mt-5">
+          <h1 class="mb-3 font-bold">Tags</h1>
+          <% @tags.each do |tag| %>
+            <div class="grid grid-cols-[min-content_1fr] gap-2">
+              <input type="checkbox"
+                     class="checkbox checkbox-accent"
+                     data-recipes-index-target="tagCheckbox"
+                     data-action="click->recipes-index#selectTag"
+                     data-tag-value="<%= tag %>"/>
+              <p><%= tag %></p>
+            </div>
+          <% end %>
+        </div>
+        <button class="btn btn-info mt-5" data-action="click->recipes-index#resetFilters">Reset All</button>
+      </div>
+    </div>
+    <div class="overflow-x-auto rounded-box border border-base-content/5 bg-base-100" id="recipes-table">
 
     </div>
   </div>

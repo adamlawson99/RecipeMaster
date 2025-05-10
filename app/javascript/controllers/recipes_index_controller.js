@@ -108,7 +108,7 @@ export default class extends Controller {
 
         // Create table
         const table = document.createElement('table');
-        table.className = 'table';
+        table.className = 'table bt-5';
 
         // Create table header
         const thead = document.createElement('thead');

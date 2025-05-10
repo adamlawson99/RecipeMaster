@@ -4,11 +4,12 @@ class RecipesController < ApplicationController
   # GET /recipes or /recipes.json
   def index
     @recipes = Recipe.all
-    @tags = get_tags
-    @categories = get_categories
   end
 
   def query
+    @recipes = Recipe.all
+    @tags = get_tags
+    @categories = get_categories
     query_param = params[:query]
     Rails.logger.error(query_param)
     if query_param && !query_param.empty?

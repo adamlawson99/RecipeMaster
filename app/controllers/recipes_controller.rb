@@ -1,4 +1,5 @@
 class RecipesController < ApplicationController
+  include RecipesHelper
   before_action :set_recipe, only: %i[ show edit update destroy ]
 
   # GET /recipes or /recipes.json
@@ -8,8 +9,6 @@ class RecipesController < ApplicationController
 
   def query
     @recipes = Recipe.all
-    @tags = get_tags
-    @categories = get_categories
     query_param = params[:query]
     Rails.logger.error(query_param)
     if query_param && !query_param.empty?
@@ -18,6 +17,8 @@ class RecipesController < ApplicationController
     else
       @query_data = Recipe.all.to_json
     end
+    @tags = get_string_field_as_array(@query_data, "tags")
+    @categories = get_string_field_as_array(@query_data, "categories")
     respond_to do |format|
       format.html { render "recipes/table" }
     end
@@ -29,6 +30,7 @@ class RecipesController < ApplicationController
 
   # GET /recipes/new
   def new
+    @fetched_data = JSON.parse({ "title": "Chicken Burrito Bowl with Cilantro Lime Rice", "description": "This easy Chicken Burrito Bowl recipe features juicy seasoned chicken, fluffy cilantro lime rice, your favorite toppings, and a flavorful homemade burrito bowl sauce. It’s a simple healthy meal that’s perfect for meal prep, weeknight dinners, or a quick lunch!", "short_description": "Easy and healthy chicken burrito bowl recipe.", "categories": [ "Main Course", "Dinner", "Lunch", "Healthy" ], "tags": [ "chicken", "rice", "burrito bowl", "cilantro lime" ], "servings": 4, "ingredients": [ { "ingredient": "Boneless skinless chicken breasts", "quantity": 1.5, "measurement": "lb" }, { "ingredient": "Olive oil", "quantity": 1, "measurement": "tbsp" }, { "ingredient": "Chili powder", "quantity": 1, "measurement": "tbsp" }, { "ingredient": "Cumin", "quantity": 1, "measurement": "tsp" }, { "ingredient": "Garlic powder", "quantity": 1, "measurement": "tsp" }, { "ingredient": "Onion powder", "quantity": 1, "measurement": "tsp" }, { "ingredient": "Salt", "quantity": 0.5, "measurement": "tsp" }, { "ingredient": "Black pepper", "quantity": 0.25, "measurement": "tsp" }, { "ingredient": "Cooked rice", "quantity": 3, "measurement": "cups" }, { "ingredient": "Fresh lime juice", "quantity": 2, "measurement": "tbsp" }, { "ingredient": "Fresh cilantro", "quantity": 0.25, "measurement": "cup" }, { "ingredient": "Greek yogurt or sour cream", "quantity": 0.5, "measurement": "cup" }, { "ingredient": "Lime juice", "quantity": 1, "measurement": "tbsp" }, { "ingredient": "Water", "quantity": 2, "measurement": "tbsp" }, { "ingredient": "Hot sauce", "quantity": 1, "measurement": "tsp" }, { "ingredient": "Cooked Black Beans", "quantity": 1, "measurement": "cup" }, { "ingredient": "Corn", "quantity": 1, "measurement": "cup" }, { "ingredient": "Avocado", "quantity": 1, "measurement": "" }, { "ingredient": "Shredded cheddar cheese", "quantity": 0.5, "measurement": "cup" }, { "ingredient": "Salsa", "quantity": 0.5, "measurement": "cup" } ], "instructions": "1. In a medium bowl, combine the chili powder, cumin, garlic powder, onion powder, salt and pepper. Set aside. \n2. Cut the chicken into 1-inch cubes and place in a bowl. Drizzle with the olive oil and toss to coat. Sprinkle the seasoning mixture over the chicken and toss to coat evenly.\n3. Heat a large skillet over medium-high heat. Add the chicken and cook until it is cooked through, about 5-7 minutes.\n4. While the chicken is cooking, prepare the cilantro lime rice. In a large bowl, combine the cooked rice, lime juice, and cilantro. Stir to combine.\n5. In a small bowl, combine the Greek yogurt, lime juice, water, and hot sauce. Stir to combine.\n6. To assemble the bowls, divide the cilantro lime rice among 4 bowls. Top with the chicken, black beans, corn, avocado, cheese and salsa. Drizzle with the Greek yogurt sauce. Serve immediately." }.to_json)
     @recipe = Recipe.new
   end
 
@@ -57,16 +59,13 @@ class RecipesController < ApplicationController
 
   # POST /recipes or /recipes.json
   def create
-    @recipe = Recipe.new(recipe_params)
-    process_ingredients
+    recipe_creating_service = RecipeCreatingService.new
+    @recipe = RecipeCreatingService.new.create_recipe(recipe_params)
     respond_to do |format|
-      if @recipe.save
+      if recipe_creating_service.save_recipe?(@recipe)
         format.html { redirect_to @recipe, notice: "Recipe was successfully created." }
         format.json { render :show, status: :created, location: @recipe }
       else
-        @recipe.errors.each do |error|
-          Rails.logger.error("ERRORS: #{error.full_message}")
-        end
         format.html { render :new, status: :unprocessable_entity }
         format.json { render json: @recipe.errors, status: :unprocessable_entity }
       end
@@ -75,7 +74,7 @@ class RecipesController < ApplicationController
 
   # PATCH/PUT /recipes/1 or /recipes/1.json
   def update
-    process_ingredients
+    process_ingredients(@recipe)
     respond_to do |format|
       if @recipe.update(recipe_params)
         format.html { redirect_to @recipe, notice: "Recipe was successfully updated." }
@@ -99,40 +98,15 @@ class RecipesController < ApplicationController
 
   private
 
-  def get_tags
-    tags = []
-    @recipes.each do |recipe|
-      next if recipe.tags&.blank?
-      tags += recipe.tags.split(",")
+  def get_string_field_as_array(query_data, field)
+    items = JSON.parse(query_data)
+    result = []
+    items.each do |item|
+      next if item[field].nil?
+      next if item[field]&.blank?
+      result += item[field].split(",")
     end
-    @tags = tags
-  end
-
-  def get_categories
-    categories = []
-    @recipes.each do |recipe|
-      next if recipe.categories&.blank?
-      categories += recipe.categories.split(",")
-    end
-    @categories = categories
-  end
-
-  def process_ingredients
-    ingredients_params = params[:ingredients] || []
-
-    # Filter out empty ingredient rows
-    ingredients_data = ingredients_params.select do |ing|
-      ing[:ingredient].present?
-    end.map do |ing|
-      {
-        ingredient: ing[:ingredient],
-        quantity: ing[:quantity].to_f,
-        measurement: ing[:measurement]
-      }
-    end
-
-    # Set the json data
-    @recipe.ingredients = { ingredients: ingredients_data }.to_json
+    result
   end
 
   def valid_json?(json)

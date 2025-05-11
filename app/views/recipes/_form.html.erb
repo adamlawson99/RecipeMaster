@@ -1,10 +1,10 @@
-<%= form_with(model: recipe, class: "contents") do |form| %>
-  <% if recipe.errors.any? %>
-    <div id="error_explanation" class="bg-red-50 text-red-500 px-3 py-2 font-medium rounded-md mt-3">
-      <h2><%= pluralize(recipe.errors.count, "error") %> prohibited this recipe from being saved:</h2>
+<%= form_with(model: @recipe, class: "contents", data: { controller: "ingredients" }) do |form| %>
+  <% if @recipe.errors.any? %>
+    <div id="error_explanation" class="bg-red-50 text-red-500 px-3 py-2 font-medium rounded-lg mt-3">
+      <h2><%= pluralize(@recipe.errors.count, "error") %> prohibited this recipe from being saved:</h2>
 
-      <ul class="list-disc ml-6">
-        <% recipe.errors.each do |error| %>
+      <ul>
+        <% @recipe.errors.each do |error| %>
           <li><%= error.full_message %></li>
         <% end %>
       </ul>
@@ -12,56 +12,100 @@
   <% end %>
 
   <div class="my-5">
-    <%= form.label :title %>
-    <%= form.text_field :title, class: ["block shadow-sm rounded-md border px-3 py-2 mt-2 w-full", {"border-gray-400 focus:outline-blue-600": recipe.errors[:title].none?, "border-red-400 focus:outline-red-600": recipe.errors[:title].any?}] %>
+    <%= form.label :title, class: "font-bold" %>
+    <%= form.text_field :title, class: "block shadow rounded-md border border-gray-200 outline-none px-3 py-2 mt-2 w-full", value: @fetched_data["title"] %>
   </div>
 
   <div class="my-5">
-    <%= form.label :description %>
-    <%= form.text_field :description, class: ["block shadow-sm rounded-md border px-3 py-2 mt-2 w-full", {"border-gray-400 focus:outline-blue-600": recipe.errors[:description].none?, "border-red-400 focus:outline-red-600": recipe.errors[:description].any?}] %>
+    <%= form.label :source, class: "font-bold" %>
+    <%= form.text_field :source, class: "block shadow rounded-md border border-gray-200 outline-none px-3 py-2 mt-2 w-full", value: @fetched_data["source"] %>
   </div>
 
   <div class="my-5">
-    <%= form.label :short_description %>
-    <%= form.text_field :short_description, class: ["block shadow-sm rounded-md border px-3 py-2 mt-2 w-full", {"border-gray-400 focus:outline-blue-600": recipe.errors[:short_description].none?, "border-red-400 focus:outline-red-600": recipe.errors[:short_description].any?}] %>
+    <%= form.label :description, class: "font-bold" %>
+    <%= form.text_area :description, rows: 4, class: "block shadow rounded-md border border-gray-200 outline-none px-3 py-2 mt-2 w-full", value: @fetched_data["description"] %>
   </div>
 
   <div class="my-5">
-    <%= form.label :categories %>
-    <%= form.text_field :categories, class: ["block shadow-sm rounded-md border px-3 py-2 mt-2 w-full", {"border-gray-400 focus:outline-blue-600": recipe.errors[:categories].none?, "border-red-400 focus:outline-red-600": recipe.errors[:categories].any?}] %>
+    <%= form.label :short_description, class: "font-bold" %>
+    <%= form.text_area :short_description, rows: 4, class: "block shadow rounded-md border border-gray-200 outline-none px-3 py-2 mt-2 w-full", value: @fetched_data["short_description"] %>
+  </div>
+
+<!--  <div class="my-5">-->
+    <%#= form.label :categories, class: "font-bold" %>
+    <%#= form.text_area :categories, rows: 4, class: "block shadow rounded-md border border-gray-200 outline-none px-3 py-2 mt-2 w-full", value: @fetched_data["categories"].join(', ') %>
+<!--  </div>-->
+
+<!--  <div class="my-5">-->
+    <%#= form.label :tags, class: "font-bold" %>
+    <%#= form.text_area :tags, rows: 4, class: "block shadow rounded-md border border-gray-200 outline-none px-3 py-2 mt-2 w-full", value: @fetched_data["tags"].join(', ') %>
+<!--  </div>-->
+
+  <div class="my-5">
+    <%= form.label :servings, class: "font-bold" %>
+    <%= form.number_field :servings, class: "block shadow rounded-md border border-gray-200 outline-none px-3 py-2 mt-2 w-full", value: @fetched_data["servings"] %>
   </div>
 
   <div class="my-5">
-    <%= form.label :tags %>
-    <%= form.text_field :tags, class: ["block shadow-sm rounded-md border px-3 py-2 mt-2 w-full", {"border-gray-400 focus:outline-blue-600": recipe.errors[:tags].none?, "border-red-400 focus:outline-red-600": recipe.errors[:tags].any?}] %>
+    <%= form.label :instructions, class: "font-bold" %>
+    <%= form.text_area :instructions, rows: 4, class: "block shadow rounded-md border border-gray-200 outline-none px-3 py-2 mt-2 w-full", value: @fetched_data["instructions"] %>
   </div>
 
-  <div class="my-5">
-    <%= form.label :servings %>
-    <%= form.number_field :servings, class: ["block shadow-sm rounded-md border px-3 py-2 mt-2 w-full", {"border-gray-400 focus:outline-blue-600": recipe.errors[:servings].none?, "border-red-400 focus:outline-red-600": recipe.errors[:servings].any?}] %>
-  </div>
+  <h1 class="font-bold text-xl">Ingredients</h1>
 
-  <div class="my-5">
-    <%= form.label :ingredients %>
-    <%= form.text_field :ingredients, class: ["block shadow-sm rounded-md border px-3 py-2 mt-2 w-full", {"border-gray-400 focus:outline-blue-600": recipe.errors[:ingredients].none?, "border-red-400 focus:outline-red-600": recipe.errors[:ingredients].any?}] %>
-  </div>
+  <div id="ingredients-container">
+    <table id="ingredients-table" class="table">
+      <thead>
+      <tr>
+        <th>Ingredient</th>
+        <th>Quantity</th>
+        <th>Measurement</th>
+        <th></th>
+      </tr>
+      </thead>
+      <tbody id="ingredients-tbody">
+      <% @ingredients_data = @fetched_data["ingredients"] || [] %>
+      <% @ingredients_data.each do |ingredient| %>
+        <tr class="ingredient-row">
+          <td>
+            <input type="text" name="ingredients[][ingredient]" value="<%= ingredient["ingredient"] %>" class="ingredient-name">
+          </td>
+          <td>
+            <input type="number" name="ingredients[][quantity]" value="<%= ingredient["quantity"] %>" step="0.01" class="ingredient-quantity">
+          </td>
+          <td>
+            <input type="text" name="ingredients[][measurement]" value="<%= ingredient["measurement"] %>" class="ingredient-measurement">
+          </td>
+          <td>
+            <button type="button" class="btn btn-error" data-action="click->ingredients#remove">Remove</button>
+          </td>
+        </tr>
+      <% end %>
 
-  <div class="my-5">
-    <%= form.label :instructions %>
-    <%= form.text_field :instructions, class: ["block shadow-sm rounded-md border px-3 py-2 mt-2 w-full", {"border-gray-400 focus:outline-blue-600": recipe.errors[:instructions].none?, "border-red-400 focus:outline-red-600": recipe.errors[:instructions].any?}] %>
-  </div>
+      <!-- Add empty row if no ingredients -->
+      <% if @ingredients_data.empty? %>
+        <tr class="ingredient-row">
+          <td>
+            <input type="text" name="ingredients[][ingredient]" class="ingredient-name">
+          </td>
+          <td>
+            <input type="number" name="ingredients[][quantity]" step="0.01" class="ingredient-quantity">
+          </td>
+          <td>
+            <input type="text" name="ingredients[][measurement]" class="ingredient-measurement">
+          </td>
+          <td>
+            <button type="button" class="remove-ingredient">Remove</button>
+          </td>
+        </tr>
+      <% end %>
+      </tbody>
+    </table>
 
-  <div class="my-5">
-    <%= form.label :calories %>
-    <%= form.number_field :calories, class: ["block shadow-sm rounded-md border px-3 py-2 mt-2 w-full", {"border-gray-400 focus:outline-blue-600": recipe.errors[:calories].none?, "border-red-400 focus:outline-red-600": recipe.errors[:calories].any?}] %>
-  </div>
-
-  <div class="my-5">
-    <%= form.label :macros %>
-    <%= form.text_field :macros, class: ["block shadow-sm rounded-md border px-3 py-2 mt-2 w-full", {"border-gray-400 focus:outline-blue-600": recipe.errors[:macros].none?, "border-red-400 focus:outline-red-600": recipe.errors[:macros].any?}] %>
+    <button type="button" id="add-ingredient" class="btn btn-primary mb-5" data-action="click->ingredients#add">Add Ingredient</button>
   </div>
 
   <div class="inline">
-    <%= form.submit class: "w-full sm:w-auto rounded-md px-3.5 py-2.5 bg-blue-600 hover:bg-blue-500 text-white inline-block font-medium cursor-pointer" %>
+    <%= form.submit class: "rounded-lg py-3 px-5 bg-blue-600 text-white inline-block font-medium cursor-pointer w-full mr-5" %>
   </div>
 <% end %>

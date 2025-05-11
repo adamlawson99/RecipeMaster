@@ -65,8 +65,8 @@ export default class extends Controller {
     getFilteredTableData() {
         const recipes_object = JSON.parse(this.recipesValue)
         return recipes_object.filter(recipe => {
-            const categories = recipe["categories"].split(",")
-            const tags = recipe["tags"].split(",")
+            const categories = recipe["categories"]?.split(",") ?? []
+            const tags = recipe["tags"]?.split(",") ?? []
 
             return (this.selectedTags.size === 0 && this.selectedCategories.size === 0) ||
                 this.doRecipesCategoriesIncludeSelectedCategories(categories) ||

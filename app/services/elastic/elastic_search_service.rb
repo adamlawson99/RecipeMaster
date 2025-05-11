@@ -28,4 +28,34 @@ class ElasticSearchService
       }
     )
   end
+
+  def document_exist?(index, id)
+    @elastic_client.exists(
+      index: index,
+      id: id,
+    )
+  end
+
+  def save_document(index, id, document)
+    @elastic_client.create(
+      index: index,
+      id: id,
+      body: document
+    )
+  end
+
+  def delete_document(index, id)
+    @elastic_client.delete(
+      index: index,
+      id: id
+    )
+  end
+
+  def update_document(index, id, document)
+    @elastic_client.update(
+      index: index,
+      id: id,
+      body: document
+    )
+  end
 end

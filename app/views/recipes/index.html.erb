@@ -1,9 +1,8 @@
 <% content_for :title, "Recipes" %>
 
 <div>
-
   <!-- Main -->
-  <div class="ml-5 mr-5">
+  <div class="ml-5 mr-5 grid">
     <% if notice.present? %>
       <p class="py-2 px-3 bg-green-50 mb-5 text-green-500 font-medium rounded-md inline-block" id="notice"><%= notice %></p>
     <% end %>
@@ -33,10 +32,9 @@
         <% end %>
       </label>
 
-      <%= link_to "New Recipe", create_recipe_path, class: "btn btn-primary whitespace-nowrap" %>
+      <%= link_to "New Recipe", create_recipe_path, class: "btn btn-primary whitespace-nowrap justify-self-start" %>
     </div>
   </div>
   <%= turbo_frame_tag "recipes_tables", src: query_recipes_path do %>
-    <h1>Table data will be here!</h1>
   <% end %>
 </div>

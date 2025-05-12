@@ -1,4 +1,4 @@
-<%= form_with(model: @recipe, class: "contents", data: { controller: "ingredients" }) do |form| %>
+<%= form_with(model: @recipe, class: "grid grid-cols-1 ml-auto mr-auto max-w-[800px]", data: { controller: "ingredients" }) do |form| %>
   <% if @recipe.errors.any? %>
     <div id="error_explanation" class="bg-red-50 text-red-500 px-3 py-2 font-medium rounded-lg mt-3">
       <h2><%= pluralize(@recipe.errors.count, "error") %> prohibited this recipe from being saved:</h2>
@@ -13,42 +13,42 @@
 
   <div class="my-5">
     <%= form.label :title, class: "font-bold" %>
-    <%= form.text_field :title, class: "block shadow rounded-md border border-gray-200 outline-none px-3 py-2 mt-2 w-full", value: @fetched_data["title"] %>
+    <%= form.text_field :title, class: "block shadow rounded-md border border-gray-200 outline-none px-3 py-2 mt-2 w-full" %>
   </div>
 
   <div class="my-5">
     <%= form.label :source, class: "font-bold" %>
-    <%= form.text_field :source, class: "block shadow rounded-md border border-gray-200 outline-none px-3 py-2 mt-2 w-full", value: @fetched_data["source"] %>
+    <%= form.text_field :source, class: "block shadow rounded-md border border-gray-200 outline-none px-3 py-2 mt-2 w-full" %>
   </div>
 
   <div class="my-5">
     <%= form.label :description, class: "font-bold" %>
-    <%= form.text_area :description, rows: 4, class: "block shadow rounded-md border border-gray-200 outline-none px-3 py-2 mt-2 w-full", value: @fetched_data["description"] %>
+    <%= form.text_area :description, rows: 4, class: "block shadow rounded-md border border-gray-200 outline-none px-3 py-2 mt-2 w-full" %>
   </div>
 
   <div class="my-5">
     <%= form.label :short_description, class: "font-bold" %>
-    <%= form.text_area :short_description, rows: 4, class: "block shadow rounded-md border border-gray-200 outline-none px-3 py-2 mt-2 w-full", value: @fetched_data["short_description"] %>
+    <%= form.text_area :short_description, rows: 4, class: "block shadow rounded-md border border-gray-200 outline-none px-3 py-2 mt-2 w-full" %>
   </div>
 
-<!--  <div class="my-5">-->
-    <%#= form.label :categories, class: "font-bold" %>
-    <%#= form.text_area :categories, rows: 4, class: "block shadow rounded-md border border-gray-200 outline-none px-3 py-2 mt-2 w-full", value: @fetched_data["categories"].join(', ') %>
-<!--  </div>-->
+  <div class="my-5">
+    <%= form.label :categories, class: "font-bold" %>
+    <%= form.text_area :categories, rows: 4, class: "block shadow rounded-md border border-gray-200 outline-none px-3 py-2 mt-2 w-full" %>
+  </div>
 
-<!--  <div class="my-5">-->
-    <%#= form.label :tags, class: "font-bold" %>
-    <%#= form.text_area :tags, rows: 4, class: "block shadow rounded-md border border-gray-200 outline-none px-3 py-2 mt-2 w-full", value: @fetched_data["tags"].join(', ') %>
-<!--  </div>-->
+  <div class="my-5">
+    <%= form.label :tags, class: "font-bold" %>
+    <%= form.text_area :tags, rows: 4, class: "block shadow rounded-md border border-gray-200 outline-none px-3 py-2 mt-2 w-full" %>
+  </div>
 
   <div class="my-5">
     <%= form.label :servings, class: "font-bold" %>
-    <%= form.number_field :servings, class: "block shadow rounded-md border border-gray-200 outline-none px-3 py-2 mt-2 w-full", value: @fetched_data["servings"] %>
+    <%= form.number_field :servings, class: "block shadow rounded-md border border-gray-200 outline-none px-3 py-2 mt-2 w-full" %>
   </div>
 
   <div class="my-5">
     <%= form.label :instructions, class: "font-bold" %>
-    <%= form.text_area :instructions, rows: 4, class: "block shadow rounded-md border border-gray-200 outline-none px-3 py-2 mt-2 w-full", value: @fetched_data["instructions"] %>
+    <%= form.text_area :instructions, rows: 4, class: "block shadow rounded-md border border-gray-200 outline-none px-3 py-2 mt-2 w-full" %>
   </div>
 
   <h1 class="font-bold text-xl">Ingredients</h1>
@@ -64,26 +64,25 @@
       </tr>
       </thead>
       <tbody id="ingredients-tbody">
-      <% @ingredients_data = @fetched_data["ingredients"] || [] %>
-      <% @ingredients_data.each do |ingredient| %>
-        <tr class="ingredient-row">
-          <td>
-            <input type="text" name="ingredients[][ingredient]" value="<%= ingredient["ingredient"] %>" class="ingredient-name">
-          </td>
-          <td>
-            <input type="number" name="ingredients[][quantity]" value="<%= ingredient["quantity"] %>" step="0.01" class="ingredient-quantity">
-          </td>
-          <td>
-            <input type="text" name="ingredients[][measurement]" value="<%= ingredient["measurement"] %>" class="ingredient-measurement">
-          </td>
-          <td>
-            <button type="button" class="btn btn-error" data-action="click->ingredients#remove">Remove</button>
-          </td>
-        </tr>
-      <% end %>
+      <% if @recipe.ingredients %>
+        <% @recipe.ingredients_list.each do |ingredient| %>
+          <tr class="ingredient-row">
+            <td>
+              <input type="text" name="ingredients[][ingredient]" value="<%= ingredient["ingredient"] %>" class="ingredient-name">
+            </td>
+            <td>
+              <input type="number" name="ingredients[][quantity]" value="<%= ingredient["quantity"] %>" step="0.01" class="ingredient-quantity">
+            </td>
+            <td>
+              <input type="text" name="ingredients[][measurement]" value="<%= ingredient["measurement"] %>" class="ingredient-measurement">
+            </td>
+            <td>
+              <button type="button" class="btn btn-error" data-action="click->ingredients#remove">Remove</button>
+            </td>
+          </tr>
+        <% end %>
 
-      <!-- Add empty row if no ingredients -->
-      <% if @ingredients_data.empty? %>
+      <% else %>
         <tr class="ingredient-row">
           <td>
             <input type="text" name="ingredients[][ingredient]" class="ingredient-name">
@@ -95,14 +94,18 @@
             <input type="text" name="ingredients[][measurement]" class="ingredient-measurement">
           </td>
           <td>
-            <button type="button" class="remove-ingredient">Remove</button>
+            <button type="button" class="btn btn-error" data-action="click->ingredients#remove">Remove</button>
           </td>
         </tr>
       <% end %>
+
+
       </tbody>
     </table>
 
-    <button type="button" id="add-ingredient" class="btn btn-primary mb-5" data-action="click->ingredients#add">Add Ingredient</button>
+    <button type="button" id="add-ingredient" class="btn btn-primary mb-5" data-action="click->ingredients#add">Add
+      Ingredient
+    </button>
   </div>
 
   <div class="inline">

@@ -6,7 +6,7 @@ class Recipe < ApplicationRecord
   validates :calories, :macros, IsJson: true
 
   def ingredients_list
-    self.ingredients.present? ? JSON.parse(self.ingredients)["ingredients"] : []
+    self.ingredients.present? ? JSON.parse(self.ingredients) : []
   end
 
   # Make sure ingredients are always a valid structure

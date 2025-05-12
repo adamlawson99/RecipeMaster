@@ -103,12 +103,18 @@ export default class extends Controller {
 
     createRecipeTable() {
         const filteredRecipes = this.getFilteredTableData()
-        console.log("FILTERED RECIPES: " + filteredRecipes)
         const container = document.querySelector("#recipes-table")
+
+        // Create turbo frame
+        const turboFrame = document.createElement('turbo-frame')
+        turboFrame.id = "recipes_tables"
 
         // Create table
         const table = document.createElement('table');
         table.className = 'table bt-5';
+
+        // Append table
+        turboFrame.append(table)
 
         // Create table header
         const thead = document.createElement('thead');
@@ -153,6 +159,7 @@ export default class extends Controller {
             const viewButton = document.createElement('a');
             viewButton.href = `/recipes/${recipe.id}`;
             viewButton.className = 'btn btn-primary whitespace-nowrap';
+            viewButton.target = "_top"
             viewButton.textContent = 'View Recipe';
             actionCell.appendChild(viewButton);
             row.appendChild(actionCell);
@@ -161,7 +168,7 @@ export default class extends Controller {
         });
         table.appendChild(tbody)
 
-        // Add the table to the container
-        container.appendChild(table);
+        // Add the turbo frame with the table to the container
+        container.appendChild(turboFrame);
     }
 }

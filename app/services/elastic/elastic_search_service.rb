@@ -52,7 +52,8 @@ class ElasticSearchService
   end
 
   def update_document(index, id, document)
-    @elastic_client.update(
+    Rails.logger.error("UPDATE REQUEST: #{document}")
+    @elastic_client.index(
       index: index,
       id: id,
       body: document
